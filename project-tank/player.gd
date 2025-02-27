@@ -2,11 +2,12 @@ extends CharacterBody2D
 
 signal moved
 
-@export var speed = 400
+@export var speed = 200
 var screen_size
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	Global.player_hit.connect(_on_player_hit)
 	screen_size = get_viewport_rect().size
 
 
@@ -33,12 +34,14 @@ func _process(delta: float) -> void:
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		if "bullet" in collision.get_collider():  # checks for the bullet property
-			hide()
 			Global.player_hit.emit()
-			$CollisionShape2D.set_deferred("disabled", true)
 			
 
 func start(pos):
 	position = pos
 	show()
 	$CollisionShape2D.disabled = false
+
+func _on_player_hit():
+	hide()
+	$CollisionShape2D.set_deferred("disabled", true)

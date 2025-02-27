@@ -13,9 +13,15 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var collision = move_and_collide(velocity * delta)
+	# the collidable variable allows the bullet to escape the wall before it collides twice
 	if collision and collidable:
 		num_collisions += 1
-		if num_collisions == 2 or collision.get_collider() == bullet:
+		if collision.get_collider().name == "Player":
+			Global.player_hit.emit()
+		if collision.get_collider().name == "Bullet":
+			collision.get_collider().remove()
+			queue_free()
+		if num_collisions == 2:
 			queue_free()
 		var angle_diff = velocity.angle_to(collision.get_normal())
 		velocity = velocity.bounce(collision.get_normal())
@@ -30,3 +36,6 @@ func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 
 func _on_player_hit():
 	velocity = Vector2.ZERO
+
+func remove():
+	queue_free()
