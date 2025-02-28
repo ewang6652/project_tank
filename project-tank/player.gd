@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 signal moved
 
-@export var speed = 200
+@export var speed = 150
 var screen_size
 
 # Called when the node enters the scene tree for the first time.
@@ -26,16 +26,14 @@ func _process(delta: float) -> void:
 	
 	if input_vector.length() > 0:
 		velocity = input_vector.normalized() * speed
+		move_and_slide()
+		for i in get_slide_collision_count():
+			var collision = get_slide_collision(i)
+			if "bullet" in collision.get_collider():  # checks for the bullet property
+				Global.player_hit.emit()
 		moved.emit()
 	else:
 		velocity = Vector2.ZERO
-	
-	move_and_slide()
-	for i in get_slide_collision_count():
-		var collision = get_slide_collision(i)
-		if "bullet" in collision.get_collider():  # checks for the bullet property
-			Global.player_hit.emit()
-			
 
 func start(pos):
 	position = pos

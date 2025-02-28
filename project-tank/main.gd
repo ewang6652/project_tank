@@ -13,7 +13,7 @@ func _input(event):
 		var bullet = bullet_scene.instantiate()
 		bullet.position = $Player/Turret/Bullet_Spawner.global_position
 		bullet.rotation = $Player/Turret.rotation
-		bullet.velocity = Vector2(0.0, 300.0).rotated(bullet.rotation)
+		bullet.velocity = Vector2(0.0, 200.0).rotated(bullet.rotation)
 		add_child(bullet)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

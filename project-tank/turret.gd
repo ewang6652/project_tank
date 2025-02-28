@@ -8,7 +8,7 @@ var mouse_position
 func _ready() -> void:
 	screen_size = get_viewport_rect().size
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
-	Input.set_custom_mouse_cursor(cursor)
+	Input.set_custom_mouse_cursor(cursor, 0, Vector2(16, 16))
 
 func _input(event):
 	if event is InputEventMouseMotion:
