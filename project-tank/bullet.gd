@@ -21,6 +21,9 @@ func _process(delta: float) -> void:
 		num_collisions += 1
 		if initialized and collision.get_collider().name == "Player":
 			Global.player_hit.emit()
+		if initialized and collision.get_collider().has_method("die"):
+			collision.get_collider().die()
+			queue_free()
 		if collision.get_collider().has_method("remove"):
 			collision.get_collider().remove()
 			queue_free()

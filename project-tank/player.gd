@@ -3,13 +3,14 @@ extends CharacterBody2D
 signal moved
 
 @export var speed = 150
-var screen_size
+var bullet_scene = preload("res://bullet.tscn")
+var shooting = false
+var initial_children
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	initial_children = get_child_count()
 	Global.player_hit.connect(_on_player_hit)
-	screen_size = get_viewport_rect().size
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -32,13 +33,21 @@ func _process(delta: float) -> void:
 			if "bullet" in collision.get_collider():  # checks for the bullet property
 				Global.player_hit.emit()
 		moved.emit()
-	else:
-		velocity = Vector2.ZERO
 
-func start(pos):
-	position = pos
-	show()
-	$CollisionShape2D.disabled = false
+func _input(event):
+	if event is InputEventMouseButton and event.button_index == 1 and event.pressed:
+		var count = 0
+		for node in get_children():
+			if "bullet" in node:
+				count += 1
+		if count >= 5:
+			return
+		
+		var bullet = bullet_scene.instantiate()
+		bullet.position = $Turret/Bullet_Spawner.global_position
+		bullet.rotation = $Turret.rotation
+		bullet.velocity = Vector2(0.0, 200.0).rotated(bullet.rotation)
+		add_child(bullet)
 
 func _on_player_hit():
 	hide()

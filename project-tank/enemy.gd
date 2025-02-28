@@ -1,12 +1,13 @@
-extends Node
+extends CharacterBody2D
 
-signal player_hit
-signal enemy_killed
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
-
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+func die():
+	Global.enemy_killed.emit()
+	queue_free()

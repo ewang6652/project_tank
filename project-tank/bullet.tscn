@@ -19,8 +19,10 @@ radius = 5.0
 height = 21.0
 
 [node name="Bullet" type="CharacterBody2D"]
+top_level = true
 script = ExtResource("1_dvm8c")
 metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.078125, 0.164063)

@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://bsyvs0hksvbpo"]
+
+[ext_resource type="Script" path="res://enemy.gd" id="1_ty75o"]
+[ext_resource type="Texture2D" uid="uid://dp5unq1p8cbbb" path="res://icon.svg" id="2_vnwlp"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_iagat"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_vnwlp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hl0n3"]
+size = Vector2(39, 39)
+
+[node name="Enemy" type="CharacterBody2D"]
+script = ExtResource("1_ty75o")
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-3.09944e-06, 4.05312e-06)
+scale = Vector2(0.304531, 0.302578)
+sprite_frames = SubResource("SpriteFrames_iagat")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_hl0n3")
+
+[node name="Turret" type="Marker2D" parent="."]
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Turret"]
+position = Vector2(-3.8147e-06, 20.5)
+scale = Vector2(0.0390624, 0.367188)
+texture = ExtResource("2_vnwlp")
+
+[node name="Bullet_Spawner" type="Marker2D" parent="Turret"]
+position = Vector2(0, 47)
