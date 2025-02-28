@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dp5unq1p8cbbb" path="res://icon.svg" id="4_cyduf"]
 [ext_resource type="Script" path="res://turret.gd" id="5_54c1f"]
 [ext_resource type="Texture2D" uid="uid://dog2ymoxker4s" path="res://tiles.png" id="6_c7sv5"]
-[ext_resource type="AudioStream" uid="uid://l4f3vaby8bqn" path="res://explosion.mp3" id="7_sbqos"]
+[ext_resource type="AudioStream" uid="uid://b4txc2bskg3tb" path="res://explosion.mp3" id="7_sbqos"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4fw0c"]
 texture = ExtResource("6_c7sv5")
