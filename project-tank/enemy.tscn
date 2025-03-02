@@ -18,7 +18,10 @@ animations = [{
 size = Vector2(39, 39)
 
 [node name="Enemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 7
 script = ExtResource("1_ty75o")
+raycast_mask = 5
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
@@ -40,3 +43,7 @@ texture = ExtResource("2_vnwlp")
 
 [node name="Bullet_Spawner" type="Marker2D" parent="Turret"]
 position = Vector2(0, 47)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
