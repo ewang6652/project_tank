@@ -1,8 +1,13 @@
 extends CharacterBody2D
 
 var screen_size
-var turret_angular_speed = PI/2  # per second
 var bullet_scene = preload("res://bullet.tscn")
+@export_range(0, 360, 1, "radians_as_degrees", "suffix:°/s") var turret_angular_speed = PI/2  # per second
+## How many times bullets shot by this enemy can bounce off walls
+@export_range(0, 3) var max_ricochets = 1
+## Speed of bullets shot by this enemy in pixels per second
+@export var bullet_speed = 200
+## What collision layers are checked when aiming a shot
 @export_flags_2d_physics var raycast_mask
 
 # Called when the node enters the scene tree for the first time.
@@ -45,14 +50,14 @@ func shoot():
 		var bullet = bullet_scene.instantiate()
 		bullet.position = $Turret/Bullet_Spawner.global_position
 		bullet.rotation = $Turret.rotation
-		bullet.velocity = Vector2(0.0, 200.0).rotated(bullet.rotation)
+		bullet.velocity = Vector2(0.0, bullet_speed).rotated(bullet.rotation)
 		add_sibling(bullet)
 		$Timer.start()
 	
 
 func _physics_process(delta):
 	var done = false
-	for ricochets in range(2):
+	for ricochets in range(max_ricochets+1):  # can we hit the player with 0 ricochets? 1? ...
 		for theta in range(360):
 			if raycast(deg_to_rad(theta), ricochets):
 				rotate_turret(deg_to_rad(theta), delta)
