@@ -18,10 +18,6 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-
-# Called every physics frame.
-func _physics_process(delta):
 	var shooting = false
 	for ricochets in range(max_ricochets+1):  # can we hit the player with 0 ricochets? 1? ...
 		for theta in range(0, 360, 5):
@@ -33,7 +29,7 @@ func _physics_process(delta):
 			break
 	if not shooting:  # the player cannot be hit, so move
 		var curr_pos = global_position
-		
+
 
 func raycast(angle, ricochets=1):  # returns true if player is found
 	var space_state = get_world_2d().direct_space_state
@@ -43,7 +39,11 @@ func raycast(angle, ricochets=1):  # returns true if player is found
 	#raycast_line.clear_points()
 	#raycast_line.add_point(from - global_position)
 	for ricochet in range(ricochets+1):  # one for the initial shot, then the ricochets
-		var query = PhysicsRayQueryParameters2D.create(from, to, raycast_mask, [self])
+		var query
+		if ricochet == 0:
+			query = PhysicsRayQueryParameters2D.create(from, to, raycast_mask, [self])
+		else:
+			query = PhysicsRayQueryParameters2D.create(from, to, raycast_mask)
 		var result = space_state.intersect_ray(query)
 		if not result:
 			return false
