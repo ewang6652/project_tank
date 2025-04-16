@@ -4,6 +4,7 @@ extends Node2D
 func _ready() -> void:
 	Global.player_hit.connect(_on_player_hit)
 	Global.enemy_killed.connect(_on_enemy_killed)
+	randomize()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

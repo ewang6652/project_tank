@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bsyvs0hksvbpo"]
+[gd_scene load_steps=6 format=3 uid="uid://bsyvs0hksvbpo"]
 
 [ext_resource type="Script" path="res://enemy.gd" id="1_ty75o"]
 [ext_resource type="Texture2D" uid="uid://dp5unq1p8cbbb" path="res://icon.svg" id="2_vnwlp"]
@@ -16,6 +16,8 @@ animations = [{
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hl0n3"]
 size = Vector2(39, 39)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_eawmu"]
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
@@ -47,3 +49,13 @@ position = Vector2(0, 47)
 [node name="Timer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
+
+[node name="Destination" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Destination"]
+shape = SubResource("CircleShape2D_eawmu")
+
+[connection signal="area_entered" from="Destination" to="." method="_on_destination_area_entered"]

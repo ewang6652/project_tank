@@ -10,14 +10,16 @@ var bullet_scene = preload("res://bullet.tscn")
 @export var bullet_speed = 200
 ## What collision layers are checked when aiming a shot
 @export_flags_2d_physics var raycast_mask
+var destination
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	#add_child(raycast_line)
 	screen_size = get_viewport().size
+	destination = global_position
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	var shooting = false
 	for ricochets in range(max_ricochets+1):  # can we hit the player with 0 ricochets? 1? ...
 		for theta in range(0, 360, 5):
@@ -28,7 +30,30 @@ func _process(delta):
 		if shooting:
 			break
 	if not shooting:  # the player cannot be hit, so move
-		var curr_pos = global_position
+		# random movement: choose a destination and if no obstacles in way then move there
+		if $Destination.overlaps_body(self):
+			destination = Vector2(global_position.x + randf_range(-200, 200), 
+								  global_position.y + randf_range(-200, 200))
+			var query = PhysicsRayQueryParameters2D.create(global_position, destination, 1)
+			var space_state = get_world_2d().direct_space_state
+			var result = space_state.intersect_ray(query)
+			if result:
+				destination = global_position
+				velocity = Vector2.ZERO
+			else:
+				$Destination.global_position = destination
+				velocity = (destination - global_position).normalized() * 100
+		$Destination.global_position = destination
+		velocity = (destination - global_position).normalized() * 100
+		var collision = move_and_collide(velocity * delta)
+		if collision:
+			destination = global_position
+			velocity = Vector2.ZERO
+
+
+#func _on_destination_area_entered(area: Area2D) -> void:
+	#destination = global_position
+	#velocity = Vector2.ZERO
 
 
 func raycast(angle, ricochets=1):  # returns true if player is found
