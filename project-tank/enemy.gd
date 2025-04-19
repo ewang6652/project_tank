@@ -31,29 +31,55 @@ func _physics_process(delta):
 			break
 	if not shooting:  # the player cannot be hit, so move
 		# random movement: choose a destination and if no obstacles in way then move there
-		if $Destination.overlaps_body(self):
-			destination = Vector2(global_position.x + randf_range(-200, 200), 
-								  global_position.y + randf_range(-200, 200))
-			var query = PhysicsRayQueryParameters2D.create(global_position, destination, 1)
-			var space_state = get_world_2d().direct_space_state
-			var result = space_state.intersect_ray(query)
-			if result:
-				destination = global_position
-				velocity = Vector2.ZERO
-			else:
-				$Destination.global_position = destination
-				velocity = (destination - global_position).normalized() * 100
+		#if $Destination.overlaps_body(self):
+			#destination = Vector2(global_position.x + randf_range(-200, 200), 
+								  #global_position.y + randf_range(-200, 200))
+			#var query = PhysicsRayQueryParameters2D.create(global_position, destination, 1)
+			#var space_state = get_world_2d().direct_space_state
+			#var result = space_state.intersect_ray(query)
+			#if result:
+				#destination = global_position
+				#velocity = Vector2.ZERO
+			#else:
+				#$Destination.global_position = destination
+				#velocity = (destination - global_position).normalized() * 100
+		
+		# Pathfinding to player
+		destination = $"../Player".global_position
+		var query = PhysicsRayQueryParameters2D.create(global_position, destination, 1)
+		var space_state = get_world_2d().direct_space_state
+		var result = space_state.intersect_ray(query)
+		var queue = [[Vector2((int(global_position.x) / 32) * 32 + 16, (int(global_position.y) / 32) * 32 + 16)]]
+		var neighbors = [Vector2(0, 32), Vector2(32, 32), Vector2(32, 0), Vector2(32, -32),
+						 Vector2(0, -32), Vector2(-32, -32), Vector2(-32, 0), Vector2(-32, 32)]
+		if result:
+			var path
+			while true:
+				path = queue.pop_back()
+				query = PhysicsRayQueryParameters2D.create(path[-1], destination, 1)
+				result = space_state.intersect_ray(query)
+				if not result:
+					break
+				for neighbor in neighbors:
+					var point_query = PhysicsPointQueryParameters2D.new()
+					point_query.set_position(path[-1] + neighbor)
+					if not space_state.intersect_point(point_query, 1):
+						var new_path = path.duplicate(true)
+						new_path.append(path[-1] + neighbor)
+						queue.append(new_path)
+				queue.sort_custom(func(a, b): return (destination - a[-1]).length() > (destination - b[-1]).length())
+			path.reverse()
+			for point in path:
+				query = PhysicsRayQueryParameters2D.create(global_position, point, 1)
+				result = space_state.intersect_ray(query)
+				if not result:
+					destination = point
+					break
+		
+		#movement code once destination is finalized
 		$Destination.global_position = destination
 		velocity = (destination - global_position).normalized() * 100
-		var collision = move_and_collide(velocity * delta)
-		if collision:
-			destination = global_position
-			velocity = Vector2.ZERO
-
-
-#func _on_destination_area_entered(area: Area2D) -> void:
-	#destination = global_position
-	#velocity = Vector2.ZERO
+		move_and_slide()
 
 
 func raycast(angle, ricochets=1):  # returns true if player is found
